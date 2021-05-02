@@ -1,11 +1,12 @@
 import os
-import cv2
+import sys
 import json
-import progressbar
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
-from cat_vs_dog.configs import configs
+# add project to path
+sys.path.append("../")
+from dog_vs_cat.configs import configs
 from pyimagesearch.nn.conv.AlexNet import AlexNet
 from pyimagesearch.callbacks.TrainingMonitor import TrainingMonitor
 from pyimagesearch.io.HDF5DatasetGenerator import HDF5DatasetGenerator
