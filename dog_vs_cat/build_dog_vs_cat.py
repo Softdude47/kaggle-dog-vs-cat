@@ -1,4 +1,5 @@
 import os
+import sys
 import cv2
 import json
 import numpy as np
@@ -7,7 +8,8 @@ from imutils.paths import list_images
 from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
-from cat_vs_dog.configs import configs
+sys.path.append("../")
+from dog_vs_cat.configs import configs
 from pyimagesearch.io.HDF5DatasetWriter import HDF5DatasetWriter
 from pyimagesearch.preprocessing.AspectAwarePreprocessor import AspectAwarePreprocessor
 
