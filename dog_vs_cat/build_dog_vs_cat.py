@@ -9,14 +9,14 @@ from sklearn.preprocessing import LabelEncoder
 from sklearn.model_selection import train_test_split
 
 sys.path.append("../")
-from dog_vs_cat.configs import configs
+from dog_vs_cat.configs import dog_vs_cat_configs as configs
 from pyimagesearch.io.HDF5DatasetWriter import HDF5DatasetWriter
 from pyimagesearch.preprocessing.AspectAwarePreprocessor import AspectAwarePreprocessor
 
 # split dataset into training, validation and testing
 # using the class(labels) and path to image(features)
 train_path = list(list_images(configs.IMAGE_PATH))
-train_label = [path.split(os.sep)[-2] for path in train_path]
+train_label = [configs.get_label(path) for path in train_path]
 train_label = LabelEncoder().fit_transform(train_label)
 
 (train_path, test_path), (train_label, test_label) = train_test_split(train_path, train_label, test_size=configs.TEST_SPLIT, stratify=train_label, random_state=42)
