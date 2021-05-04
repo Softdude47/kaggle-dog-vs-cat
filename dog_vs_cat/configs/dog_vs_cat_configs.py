@@ -25,6 +25,6 @@ if not os.path.exists(OUTPUT_PATH):
 # function used for extracting label from image path
 def get_label(path:str):
     """ when file path is structured like '/directories/classname.index.jpg' """
-    filename = path.split("/")[-1]
+    filename = path.split(os.path.sep)[-1]
     label = filename.split(".")[0]
     return label
