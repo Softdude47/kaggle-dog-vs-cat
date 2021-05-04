@@ -19,8 +19,8 @@ train_path = list(list_images(configs.IMAGE_PATH))
 train_label = [configs.get_label(path) for path in train_path]
 train_label = LabelEncoder().fit_transform(train_label)
 
-(train_path, test_path), (train_label, test_label) = train_test_split(train_path, train_label, test_size=configs.TEST_SPLIT, stratify=train_label, random_state=42)
-(train_path, val_path), (train_label, val_label) = train_test_split(train_path, train_label, test_size=configs.VAL_SPLIT, stratify=train_path, random_state=42)
+(train_path, test_path, train_label, test_label) = train_test_split(train_path, train_label, test_size=configs.TEST_SPLIT, stratify=train_label, random_state=42)
+(train_path, val_path, train_label, val_label) = train_test_split(train_path, train_label, test_size=configs.VAL_SPLIT, stratify=train_path, random_state=42)
 
 datasets = [
     ("train", train_path, train_label, configs.TRAIN_HDF5),
