@@ -4,7 +4,7 @@ class HDF5DatasetWriter:
     def __init__(self, file_name: str, feature_ref_name: str, buffer_size: int, shape: list or tuple):
         
         # hdf file/database with sub directories of labels and data
-        self.db = h5py.File(file_name, mode="r")
+        self.db = h5py.File(file_name, mode="w")
         self.features = self.db.create_dataset(name=feature_ref_name, shape=shape, dtype=float)
         self.labels = self.db.create_dataset(name="labels", shape=(shape[0], ), dtype=int)
         
