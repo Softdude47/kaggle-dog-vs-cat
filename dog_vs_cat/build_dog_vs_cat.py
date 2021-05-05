@@ -54,7 +54,7 @@ for (d_type, paths, labels, output_path) in datasets:
         # extract the image channel from training dataset image
         # appends it to its respective array
         if d_type == "train":
-            (b, g, r) = image
+            (b, g, r) = cv2.split(image.astype("float"))
             R.append(r)
             G.append(g)
             B.append(b)

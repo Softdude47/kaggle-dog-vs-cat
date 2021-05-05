@@ -16,7 +16,7 @@ class HDF5DatasetWriter:
     def add(self, features: list, labels: list):
         """ registers data to buffer """
         self.buffer["features"].extend(features)
-        self.buffer["labels"].extenend(labels)
+        self.buffer["labels"].extend(labels)
         
         if len(self.buffer["features"]) > self.buffer_size:
             self.__flush()
