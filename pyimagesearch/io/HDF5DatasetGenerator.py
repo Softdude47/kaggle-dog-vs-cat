@@ -4,7 +4,7 @@ from keras.utils import np_utils
 
 class HDF5DatasetGenerator:
     """ HDF5 based dataset generator"""
-    def __init__(self, db_path, batch_size=32, preprocessors=None, aug=None, binarize=True, classes=2):
+    def __init__(self, db_path, feature_ref_name="image", batch_size=32, preprocessors=None, aug=None, binarize=True, classes=2):
         # stores the batch size, preprocessors, augmentor,
         # wether or not to binarize labels, number of unique classes
         self.batch_size = batch_size
@@ -12,11 +12,12 @@ class HDF5DatasetGenerator:
         self.aug = aug
         self.binarize = binarize
         self.classes = classes
+        self.feature_ref_name = feature_ref_name
         
         # opens the HDF5 database for reading and determining
         # the total number of entries in the database
         self.db = h5py.File(db_path)
-        self.num_images = self.db["images"].shape[0]
+        self.num_images = self.db[self.feature_ref_name].shape[0]
         
     def generate(self, passes=np.inf):
         # initialize the epoch count
@@ -29,7 +30,7 @@ class HDF5DatasetGenerator:
             for i in np.arange(0, self.num_images, self.batch_size):
                 
                 # extracts the images and labels from the HDF5 datasets
-                images = self.db["images"][i : i + self.batch_size]
+                images = self.db[self.feature_ref_name][i : i + self.batch_size]
                 labels = self.db["labels"][i + i + self.batch_size]
                 
                 # checks to see if the labels should be binarize

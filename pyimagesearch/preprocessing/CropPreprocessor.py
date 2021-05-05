@@ -14,7 +14,7 @@ class CropPreprocessor:
     def preprocess(self, image):
         # extracts image dimension and initializes a list
         # to store final results
-        (h, w) = image.shape
+        (h, w) = image.shape[:2]
         cropped_images = []
         
         # a list containing image cordinates(used in resizing)

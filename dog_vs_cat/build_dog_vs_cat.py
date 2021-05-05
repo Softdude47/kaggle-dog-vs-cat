@@ -38,7 +38,7 @@ for (d_type, paths, labels, output_path) in datasets:
     
     # construct image shape and initialize the database
     input_shape = (len(paths), configs.IMAGE_HEIGHT, configs.IMAGE_WIDTH)
-    db = HDF5DatasetWriter(name=output_path, feature_ref_name="data", buffer_size=configs.HDF5_BUFFER_SIZE, shape=input_shape)
+    db = HDF5DatasetWriter(file_name=output_path, feature_ref_name="data", buffer_size=configs.HDF5_BUFFER_SIZE, shape=input_shape)
     
     # displays progress
     print(f"[INFO] building {output_path}")
@@ -46,7 +46,7 @@ for (d_type, paths, labels, output_path) in datasets:
     pbar = progressbar.ProgressBar(max_value=len(paths), widgets=widgets)
     
     # loop over the datasets image path and the corresponding label
-    for (i, (path, label)) in enumerate(zip(output_path, labels)):
+    for (i, (path, label)) in enumerate(zip(paths, labels)):
         # read image from path and apply preprocessor
         image = cv2.imread(path)
         image = aap.preprocess(image)
