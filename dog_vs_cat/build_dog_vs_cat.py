@@ -37,7 +37,7 @@ aap = AspectAwarePreprocessor(width=configs.IMAGE_WIDTH, height=configs.IMAGE_HE
 for (d_type, paths, labels, output_path) in datasets:
     
     # construct image shape and initialize the database
-    input_shape = (len(paths), configs.IMAGE_HEIGHT, configs.IMAGE_WIDTH)
+    input_shape = (len(paths), configs.IMAGE_HEIGHT, configs.IMAGE_WIDTH, 3)
     db = HDF5DatasetWriter(file_name=output_path, feature_ref_name="data", buffer_size=configs.HDF5_BUFFER_SIZE, shape=input_shape)
     
     # displays progress
@@ -54,7 +54,7 @@ for (d_type, paths, labels, output_path) in datasets:
         # extract the image channel from training dataset image
         # appends it to its respective array
         if d_type == "train":
-            (b, g, r) = cv2.split(image.astype("float"))
+            (b, g, r) = cv2.mean(image.astype("float"))[:3]
             R.append(r)
             G.append(g)
             B.append(b)
@@ -70,6 +70,6 @@ for (d_type, paths, labels, output_path) in datasets:
 
 # stores the mean of training dataset image channel to json file
 mean_dict = {"R": np.mean(R), "G": np.mean(G), "B": np.mean(B)}
-f = open(configs.DATASET_MEAN)
+f = open(configs.DATASET_MEAN, "w")
 f.write(json.dumps(mean_dict))
 f.close()

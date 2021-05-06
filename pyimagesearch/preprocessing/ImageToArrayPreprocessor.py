@@ -1,4 +1,4 @@
-from keras.preprocessing.image import img_to_array
+from tensorflow.keras.preprocessing.image import img_to_array
 
 class ImageToArrayPreprocessor:
     """ converts image to keras readable format """

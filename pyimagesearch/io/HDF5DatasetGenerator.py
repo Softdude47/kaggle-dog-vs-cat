@@ -1,6 +1,6 @@
 import h5py
 import numpy as np
-from keras.utils import np_utils
+from tensorflow.keras.utils import np_utils
 
 class HDF5DatasetGenerator:
     """ HDF5 based dataset generator"""

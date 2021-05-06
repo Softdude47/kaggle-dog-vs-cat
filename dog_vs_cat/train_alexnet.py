@@ -56,7 +56,7 @@ path = os.path.sep.join([configs.OUTPUT_PATH, f"{os.getpid()}.png"])
 callbacks = [TrainingMonitor(plot_path=path)]
 
 opt = Adam(lr=1e-3)
-model = AlexNet().build(width=227, height=227)
+model = AlexNet.build(width=227, height=227, classes=configs.NUM_CLASSES)
 
 model.compile(opt, loss="binary_crossentropy", metrics=["accuracy"])
 model.fit(
