@@ -1,10 +1,10 @@
 import h5py
 import numpy as np
-from tensorflow.keras.utils import np_utils
+from tensorflow.keras.utils import to_categorical
 
 class HDF5DatasetGenerator:
     """ HDF5 based dataset generator"""
-    def __init__(self, db_path, feature_ref_name="image", batch_size=32, preprocessors=None, aug=None, binarize=True, classes=2):
+    def __init__(self, db_path, feature_ref_name="data", batch_size=32, preprocessors=None, aug=None, binarize=True, classes=2):
         # stores the batch size, preprocessors, augmentor,
         # wether or not to binarize labels, number of unique classes
         self.batch_size = batch_size
@@ -16,7 +16,7 @@ class HDF5DatasetGenerator:
         
         # opens the HDF5 database for reading and determining
         # the total number of entries in the database
-        self.db = h5py.File(db_path)
+        self.db = h5py.File(db_path, mode="r")
         self.num_images = self.db[self.feature_ref_name].shape[0]
         
     def generate(self, passes=np.inf):
@@ -31,11 +31,11 @@ class HDF5DatasetGenerator:
                 
                 # extracts the images and labels from the HDF5 datasets
                 images = self.db[self.feature_ref_name][i : i + self.batch_size]
-                labels = self.db["labels"][i + i + self.batch_size]
+                labels = self.db["labels"][i : i + self.batch_size]
                 
                 # checks to see if the labels should be binarize
                 if self.binarize:
-                    labels = np_utils.to_categorical(labels, self.classes)
+                    labels = to_categorical(labels, self.classes)
                 
                 # checks if any preprocessor was provided
                 if self.preprocessors is not None:

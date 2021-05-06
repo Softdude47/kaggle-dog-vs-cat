@@ -23,7 +23,7 @@ means = json.loads(open(configs.DATASET_MEAN).read())
 iap = ImageToArrayPreprocessor()
 mp = MeanPreprocessor(rMean=means["R"], gMean=means["G"], bMean=means["B"])
 pp = PatchPreprocessor(width=227, height=227)
-sp = SimplePreprocessor(wdith=227, height=227)
+sp = SimplePreprocessor(width=227, height=227)
 
 aug = ImageDataGenerator(
     rotation_range=30,
