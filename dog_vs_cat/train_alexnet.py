@@ -6,14 +6,14 @@ from keras.preprocessing.image import ImageDataGenerator
 
 # add project to path
 sys.path.append("../")
-from pyimagesearch.nn.conv.AlexNet import AlexNet
+from pyimagesearch.nn.conv.alexnet import AlexNet
 from dog_vs_cat.configs import dog_vs_cat_configs as configs
-from pyimagesearch.callbacks.TrainingMonitor import TrainingMonitor
-from pyimagesearch.io.HDF5DatasetGenerator import HDF5DatasetGenerator
-from pyimagesearch.preprocessing.MeanPreprocessor import MeanPreprocessor
-from pyimagesearch.preprocessing.PatchPreprocessor import PatchPreprocessor
-from pyimagesearch.preprocessing.SimplePreprocessor import SimplePreprocessor
-from pyimagesearch.preprocessing.ImageToArrayPreprocessor import ImageToArrayPreprocessor
+from pyimagesearch.callbacks.trainingmonitor import TrainingMonitor
+from pyimagesearch.io.hdf5datasetgenerator import HDF5DatasetGenerator
+from pyimagesearch.preprocessing.meanpreprocessor import MeanPreprocessor
+from pyimagesearch.preprocessing.patchpreprocessor import PatchPreprocessor
+from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
+from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
 
 EPOCH = 75
 BATCH_SIZE = 128

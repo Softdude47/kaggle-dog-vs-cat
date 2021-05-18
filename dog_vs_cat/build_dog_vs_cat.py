@@ -10,8 +10,8 @@ from sklearn.model_selection import train_test_split
 
 sys.path.append("../")
 from dog_vs_cat.configs import dog_vs_cat_configs as configs
-from pyimagesearch.io.HDF5DatasetWriter import HDF5DatasetWriter
-from pyimagesearch.preprocessing.AspectAwarePreprocessor import AspectAwarePreprocessor
+from pyimagesearch.io.hdf5datasetwriter import HDF5DatasetWriter
+from pyimagesearch.preprocessing.aspectawarepreprocessor import AspectAwarePreprocessor
 
 # split dataset into training, validation and testing
 # using the class(labels) and path to image(features)
