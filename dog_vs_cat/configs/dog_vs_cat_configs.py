@@ -18,6 +18,11 @@ TRAIN_HDF5 = f"{HDF5_PATH}/train.hdf5"
 TEST_HDF5 = f"{HDF5_PATH}/test.hdf5"
 VAL_HDF5 = f"{HDF5_PATH}/val.hdf5"
 
+IMAGE_PATH = "../datasets/kaggle_dog_vs_cat/image"
+TRAIN_IMAGE = f"{IMAGE_PATH}/train"
+TEST_IMAGE = f"{IMAGE_PATH}/test"
+VAL_IMAGE = f"{IMAGE_PATH}/val"
+
 OUTPUT_PATH = "../outputs"
 DATASET_MEAN = f"{OUTPUT_PATH}/dog_vs_cat.json"
 MODEL_PATH = f"{OUTPUT_PATH}/dog_vs_cat.model"
