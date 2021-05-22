@@ -29,6 +29,7 @@ MODEL_PATH = f"{OUTPUT_PATH}/dog_vs_cat.model"
 
 
 os.makedirs(OUTPUT_PATH, exist_ok=True)
+os.makedirs(IMAGE_PATH, exist_ok=True)
 os.makedirs(HDF5_PATH, exist_ok=True)
 
 # function used for extracting label from image path
