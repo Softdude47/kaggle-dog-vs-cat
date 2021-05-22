@@ -1,2 +1,13 @@
+# compiled file
 *__pycache__
+
+# code editor workspace files
 *workspace
+*vscode*
+*sublime*
+
+# images
+*bmp
+*png
+*jpg
+*jpeg
