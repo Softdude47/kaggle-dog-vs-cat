@@ -36,7 +36,7 @@ for (d_type, paths, labels, output_path) in datasets:
     
     # construct image shape and initialize the dataset writer class
     input_shape = (len(paths), configs.IMAGE_HEIGHT, configs.IMAGE_WIDTH, 3)
-    db = SimpleDatasetWriter(np.unique(), parent_dir=output_path)
+    db = SimpleDatasetWriter(np.unique(train_label), parent_dir=output_path)
     
     # displays progress
     print(f"[INFO] building {output_path}")
