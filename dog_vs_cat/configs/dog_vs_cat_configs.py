@@ -18,10 +18,10 @@ TRAIN_HDF5 = f"{HDF5_PATH}/train.hdf5"
 TEST_HDF5 = f"{HDF5_PATH}/test.hdf5"
 VAL_HDF5 = f"{HDF5_PATH}/val.hdf5"
 
-IMAGE_PATH = "../datasets/kaggle_dog_vs_cat/image"
-TRAIN_IMAGE = f"{IMAGE_PATH}/train"
-TEST_IMAGE = f"{IMAGE_PATH}/test"
-VAL_IMAGE = f"{IMAGE_PATH}/val"
+RAW_IMAGE = "../datasets/kaggle_dog_vs_cat/image"
+TRAIN_IMAGE = f"{RAW_IMAGE}/train"
+TEST_IMAGE = f"{RAW_IMAGE}/test"
+VAL_IMAGE = f"{RAW_IMAGE}/val"
 
 OUTPUT_PATH = "../outputs"
 DATASET_MEAN = f"{OUTPUT_PATH}/dog_vs_cat.json"
@@ -29,7 +29,7 @@ MODEL_PATH = f"{OUTPUT_PATH}/dog_vs_cat.model"
 
 
 os.makedirs(OUTPUT_PATH, exist_ok=True)
-os.makedirs(IMAGE_PATH, exist_ok=True)
+os.makedirs(RAW_IMAGE, exist_ok=True)
 os.makedirs(HDF5_PATH, exist_ok=True)
 
 # function used for extracting label from image path
