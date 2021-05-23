@@ -59,13 +59,11 @@ aug = ImageDataGenerator(
 train_generator = aug.flow_from_directory(
     directory=configs.TRAIN_IMAGE,
     target_size=(227, 227),
-    class_mode="binary",
     batch_size=BATCH_SIZE
 )
 val_generator = aug.flow_from_directory(
     directory=configs.TEST_IMAGE,
     target_size=(227, 227),
-    class_mode="binary",
     batch_size=BATCH_SIZE
 )
 
