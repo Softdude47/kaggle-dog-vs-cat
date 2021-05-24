@@ -3,8 +3,8 @@ import sys
 import json
 import numpy as np
 import matplotlib.pyplot as plt
-from keras.optimizers import Adam
-from keras.preprocessing.image import ImageDataGenerator
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
 
 # add project to path
 sys.path.append("../")

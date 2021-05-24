@@ -1,6 +1,6 @@
 import cv2
 import imutils
-from keras.preprocessing.image import img_to_array
+from tensorflow.keras.preprocessing.image import img_to_array
 
 class ImageToArray:
     """ converts image to keras array format """
