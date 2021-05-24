@@ -1,6 +1,8 @@
 import os
 import sys
 import json
+import numpy as np
+import matplotlib.pyplot as plt
 from keras.optimizers import Adam
 from keras.preprocessing.image import ImageDataGenerator
 
@@ -9,7 +11,6 @@ sys.path.append("../")
 from pyimagesearch.nn.conv.alexnet import AlexNet
 from dog_vs_cat.configs import dog_vs_cat_configs as configs
 from pyimagesearch.callbacks.trainingmonitor import TrainingMonitor
-from pyimagesearch.io.simpledatasetloader import SimpleDatasetLoader
 from pyimagesearch.preprocessing.meanpreprocessor import MeanPreprocessor
 from pyimagesearch.preprocessing.patchpreprocessor import PatchPreprocessor
 from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
@@ -46,7 +47,7 @@ train_preprocessors = CustomPreprocessing([pp, mp, iap])
 val_preprocessors = CustomPreprocessing([sp, mp, iap])
 
 # dataset generator
-aug = ImageDataGenerator(
+train_aug = ImageDataGenerator(
     rotation_range=30,
     width_shift_range=0.15,
     shear_range=0.2,
@@ -56,12 +57,16 @@ aug = ImageDataGenerator(
     preprocessing_function=train_preprocessors.preprocess
 )
 
-train_generator = aug.flow_from_directory(
+val_aug = ImageDataGenerator(
+    preprocessing_function=val_preprocessors.preprocess
+)
+
+train_generator = train_aug.flow_from_directory(
     directory=configs.TRAIN_IMAGE,
     target_size=(227, 227),
     batch_size=BATCH_SIZE
 )
-val_generator = aug.flow_from_directory(
+val_generator = val_aug.flow_from_directory(
     directory=configs.TEST_IMAGE,
     target_size=(227, 227),
     batch_size=BATCH_SIZE
