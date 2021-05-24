@@ -36,14 +36,15 @@ class CropPreprocessor:
         
         # crop and resize the images
         # using the list of cordinates
-        for ((x1, y1), (x2, y2)) in cords:
+        for (x1, y1, x2, y2) in cords:
             crop = image[y1 : y2, x1 : x2]
             crop = cv2.resize(crop, (self.wdith, self.height))
             cropped_images.append(crop)
         
         # make horizontal flip based on it value
         if self.horizontal_flip:
-            cropped_images = [cv2.flip(c, 1) for c in cropped_images]
+            flipped_images = [cv2.flip(c, 1) for c in cropped_images]
+            cropped_images.extend(flipped_images)
         
         # array containing the cropped images
         return np.array(cropped_images)
