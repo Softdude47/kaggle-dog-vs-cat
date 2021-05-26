@@ -16,7 +16,6 @@ from pyimagesearch.preprocessing.simplepreprocessor import SimplePreprocessor
 from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPreprocessor
 
 EPOCH = 75
-BATCH_SIZE = 128
 
 means = json.loads(open(configs.DATASET_MEAN).read())
 
@@ -36,7 +35,7 @@ aug = ImageDataGenerator(
 
 train_generator = HDF5DatasetGenerator(
     db_path=configs.TRAIN_HDF5,
-    batch_size=BATCH_SIZE,
+    batch_size=configs.BATCH_SIZE,
     preprocessors=[pp, mp, iap],
     aug=aug,
     binarize=True,
@@ -45,7 +44,7 @@ train_generator = HDF5DatasetGenerator(
 
 val_generator = HDF5DatasetGenerator(
     db_path=configs.TEST_HDF5,
-    batch_size=BATCH_SIZE,
+    batch_size=configs.BATCH_SIZE,
     preprocessors=[sp, mp, iap],
     aug=None,
     binarize=True,
@@ -62,10 +61,10 @@ model.compile(opt, loss="binary_crossentropy", metrics=["accuracy"])
 model.fit(
     train_generator.generate(),
     epochs=EPOCH,
-    steps_per_epoch=train_generator.num_images//BATCH_SIZE,
-    validation_steps=val_generator.num_images//BATCH_SIZE,
+    steps_per_epoch=train_generator.num_images//configs.BATCH_SIZE,
+    validation_steps=val_generator.num_images//configs.BATCH_SIZE,
     validation_data=val_generator.generate(),
-    max_queue_size=BATCH_SIZE *2,
+    max_queue_size=configs.BATCH_SIZE *2,
     callbacks=callbacks,
 )
 

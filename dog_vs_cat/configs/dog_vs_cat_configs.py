@@ -3,6 +3,7 @@ import os
 
 IMAGE_PATH = "../datasets/kaggle_dog_vs_cat/train/"
 
+BATCH_SIZE = 64
 IMAGE_HEIGHT = 256
 IMAGE_WIDTH = 256
 INTERPOLATION = cv2.INTER_AREA

@@ -18,7 +18,6 @@ from pyimagesearch.preprocessing.imagetoarraypreprocessor import ImageToArrayPre
 
 # batch and epoch for training model
 EPOCH = 75
-BATCH_SIZE = 128
 
 # mean of image channels
 means = json.loads(open(configs.DATASET_MEAN).read())
@@ -64,12 +63,12 @@ val_aug = ImageDataGenerator(
 train_generator = train_aug.flow_from_directory(
     directory=configs.TRAIN_IMAGE,
     target_size=(227, 227),
-    batch_size=BATCH_SIZE
+    batch_size=configs.BATCH_SIZE
 )
 val_generator = val_aug.flow_from_directory(
     directory=configs.TEST_IMAGE,
     target_size=(227, 227),
-    batch_size=BATCH_SIZE
+    batch_size=configs.BATCH_SIZE
 )
 
 # callback
@@ -85,10 +84,10 @@ model.compile(opt, loss="binary_crossentropy", metrics=["accuracy"])
 model.fit(
     train_generator,
     epochs=EPOCH,
-    steps_per_epoch=train_generator.samples//BATCH_SIZE,
+    steps_per_epoch=train_generator.samples//configs.BATCH_SIZE,
     validation_data=val_generator,
-    validation_steps=val_generator.samples//BATCH_SIZE,
-    max_queue_size=BATCH_SIZE *2,
+    validation_steps=val_generator.samples//configs.BATCH_SIZE,
+    max_queue_size=configs.BATCH_SIZE *2,
     callbacks=callbacks,
 )
 
