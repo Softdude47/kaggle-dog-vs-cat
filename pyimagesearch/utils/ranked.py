@@ -2,7 +2,7 @@ import numpy as np
 
 
 def rank5_accuracy(y_true, y_pred):
-    """calculates and returns rank-one and rank-five accuracy
+    """calculates and returns rank-1 and rank-5 accuracy
 
     Args:
         y_true (array): ground truth label
@@ -28,6 +28,10 @@ def rank5_accuracy(y_true, y_pred):
         # is the ground truth
         if ground_truth == prediction[0]:
             rank1 += 1
+    
+    # compute final rank-1 and rank-5 accuracies
+    rank1 /= len(y_true)
+    rank5 /= len(y_true)
     
     # returns a tuple of rank one and rank five
     return (rank1, rank5)
