@@ -7,7 +7,7 @@ class SimpleDatasetLoader:
         if self.preprocessors == None:
             self.preprocessors = []
             
-    def preprocess(self, image_path):
+    def load(self, image_path):
         image = cv2.imread(image_path)
         label = image_path.split("/")[-2]
         
