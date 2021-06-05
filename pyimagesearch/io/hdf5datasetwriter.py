@@ -13,15 +13,8 @@ class HDF5DatasetWriter:
         self.buffer_size = buffer_size
         self.index = 0
     
-    def add(self, features: list, labels: list):
-        """ registers data to buffer """
-        self.buffer["features"].extend(features)
-        self.buffer["labels"].extend(labels)
-        
-        if len(self.buffer["features"]) > self.buffer_size:
-            self.__flush()
             
-    def __flush(self, ):
+    def __flush(self,):
         """ moves data in buffer to storage """
         # get current index
         current_index = self.index + len(self.buffer["features"])
@@ -33,10 +26,22 @@ class HDF5DatasetWriter:
         # update index and clear buffer
         self.index = current_index
         self.buffer = {"features": [], "labels": []}
+    
+    def add(self, features: list, labels: list):
+        """ registers data to buffer """
+        self.buffer["features"].extend(features)
+        self.buffer["labels"].extend(labels)
         
-    def close(self, ):
+        if len(self.buffer["features"]) > self.buffer_size:
+            self.__flush()
+    def close(self,):
         """ closes database/file """
         if len(self.buffer["features"]) > 0:
             self.__flush()
             
         self.db.close()
+    
+    def store_class_label(self, class_labels):
+        dtype = h5py.special_dtype(vlen=str)
+        labels_dataset = self.db.create_dataset(name="class_labels", shape=(len(class_labels),), dtype=dtype)
+        labels_dataset[:] = class_labels
