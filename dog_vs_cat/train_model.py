@@ -39,7 +39,9 @@ args = vars(ap.parse_args())
 # opens HDF5 database and determine the index of
 # train and test split
 db = h5py.File(args["db"], mode="r")
-idx = int(db["labels"].shape[0] * configs.TEST_SPLIT)
+idx = configs.TEST_SPLIT
+if idx < 1:
+    idx = int(db["labels"].shape[0] * configs.TEST_SPLIT)
 
 # define a set of parameters we want to tune
 print("[INFO]: tunning hyperparameters...")
