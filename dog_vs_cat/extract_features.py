@@ -10,7 +10,7 @@ from keras.applications import imagenet_utils
 from keras.preprocessing.image import load_img
 from keras.preprocessing.image import img_to_array
 
-sys.append("../")
+sys.path.append("../")
 from dog_vs_cat.configs import dog_vs_cat_configs as configs
 from pyimagesearch.io.hdf5datasetwriter import HDF5DatasetWriter
 
@@ -55,7 +55,7 @@ train_labels = [configs.get_label(path) for path in train_path]
 train_labels = le.fit(train_labels)
 
 # initialize hdf5 database class and add class names (string format) of images
-db = HDF5DatasetWriter(args["output"], feature_ref_name="data", buffer_size=args["buffer-size"], shape=(len(train_path), 2048))
+db = HDF5DatasetWriter(args["output"], feature_ref_name="data", buffer_size=args["buffer_size"], shape=(len(train_path), 7 * 7 * 2048))
 db.store_class_label(le.classes_)
 
 # initialize model(without the head) and progressbar
@@ -85,9 +85,12 @@ for idx in np.arange(0, len(train_path), bs):
         # adds image to list
         batch_images.append(img)
         
+    # vertically stack-up preprocessed images
+    batch_images = np.vstack(batch_images)
+    
     # extract and flatten image features
     features = model.predict(batch_images, batch_size=bs)
-    features = np.reshape(features, (features.shape[0], 2048))
+    features = np.reshape(features, (features.shape[0], 7 * 7 * 2048))
     
     # adds features and labels to database
     db.add(features, batch_labels)
