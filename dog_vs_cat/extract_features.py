@@ -13,7 +13,6 @@ from tensorflow.keras.preprocessing.image import img_to_array
 sys.path.append("../")
 from dog_vs_cat.configs import dog_vs_cat_configs as configs
 from pyimagesearch.io.hdf5datasetwriter import HDF5DatasetWriter
-from pyimagesearch.preprocessing.patchpreprocessor import PatchPreprocessor
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
@@ -83,10 +82,8 @@ DATASET = [
     (val_labels, val_path, args["val_path"])
 ]
 
-# initialize model(without the head) along 
-# side patch preprocessor
+# initialize model without the head
 model = ResNet50(weights="imagenet", include_top=False)
-pp = PatchPreprocessor(224, 224)
 
 for (label, input_path, output_path) in DATASET:
     
@@ -119,10 +116,6 @@ for (label, input_path, output_path) in DATASET:
             # load actual image from path
             img = load_img(path=path, target_size=(224,224))
             img = img_to_array(img)
-            
-            # augment training dataset only
-            if output_path == args["train_path"]:
-                img = pp.preprocess(img)
         
             # preprocess image
             img = np.expand_dims(img, axis=0)
