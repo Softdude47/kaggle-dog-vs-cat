@@ -6,6 +6,7 @@ from tensorflow.keras.optimizers import SGD
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import classification_report
 
+plt.style.use("seaborn")
 sys.path.append("../")
 from pyimagesearch.nn.conv.bobonet import BoboNet
 from pyimagesearch.io.hdf5datasetgenerator import HDF5DatasetGenerator
