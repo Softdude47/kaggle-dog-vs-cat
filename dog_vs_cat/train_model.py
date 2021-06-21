@@ -1,16 +1,13 @@
 import sys
-import h5py
-import pickle
 import argparse
+import numpy as np
 from matplotlib import pyplot as plt
+from tensorflow.keras.optimizers import SGD
 from sklearn.metrics import accuracy_score
-from keras.optimizers import SGD
 from sklearn.metrics import classification_report
-from keras.preprocessing.image import ImageDataGenerator
 
 sys.path.append("../")
 from pyimagesearch.nn.conv.bobonet import BoboNet
-from dog_vs_cat.configs import dog_vs_cat_configs as configs
 from pyimagesearch.io.hdf5datasetgenerator import HDF5DatasetGenerator
 
 # define commandline arguments
@@ -27,47 +24,65 @@ ap.add_argument(
     "--classes",
     type=int,
     help="# of uniques labels/clases",
-    default=getattr(configs, "NUM_CLASSES", 2)
+    default=2
 )
 ap.add_argument(
     "-e",
     "--epochs",
     type=int,
     help="# of epochs in model training",
-    default=getattr(configs, "EPOCHS", 25)
+    default=3
 )
 ap.add_argument(
     "-bs",
-    "--batch_size",
+    "--batch-size",
     type=int,
     help="# of features/labels per batch in training/test process",
-    default=getattr(configs, "BATCH_SIZE", 32)
+    default=32
 )
 ap.add_argument(
-    "-d",
-    "--db",
+    "-train",
+    "--train-db",
     type=str,
     help="path to HDF database",
-    default=getattr(configs, "EXTRACTED_FEATURES_HDF5", "../outputs/extracted_features.hdf5")
+    default="../datasets/kaggle_dog_vs_cat/hdf5/train_features.hdf5"
+)
+ap.add_argument(
+    "-test",
+    "--test-db",
+    type=str,
+    help="path to HDF database",
+    default="../datasets/kaggle_dog_vs_cat/hdf5/test_features.hdf5"
+)
+ap.add_argument(
+    "-val",
+    "--val-db",
+    type=str,
+    help="path to HDF database",
+    default="../datasets/kaggle_dog_vs_cat/hdf5/val_features.hdf5"
 )
 
 args = vars(ap.parse_args())
 
-# dataset auggmentation
-aug = ImageDataGenerator(
-    rotation_range=30,
-    width_shift_range=0.1,
-    height_shift_range=0.1,
-    shear_range=0.2,
-    zoom_range=0.2,
-    horizontal_flip=True
-)
-
 # dataset generator
+print("[INFO] Loading datasets...")
 train_gen = HDF5DatasetGenerator(
-    aug=aug,
     binarize=True,
-    db_path=args["db"],
+    db_path=args["train_db"],
+    classes=args["classes"],
+    feature_ref_name="data",
+    batch_size=args["batch_size"]
+)
+test_gen = HDF5DatasetGenerator(
+    binarize=True,
+    db_path=args["test_db"],
+    classes=args["classes"],
+    feature_ref_name="data",
+    batch_size=args["batch_size"]
+)
+val_gen = HDF5DatasetGenerator(
+    binarize=True,
+    db_path=args["val_db"],
     classes=args["classes"],
     feature_ref_name="data",
     batch_size=args["batch_size"]
@@ -79,34 +94,34 @@ if args["classes"] > 2:
     loss = "categorical_crossentropy"
 
 # configures optimizer and train model
-opt = SGD(lr=1e-04, momentum=0.9, decay=1e-04/args["epoch"])
-model = BoboNet.build(input_shape=(7 * 7 * 2048), classes=args["classes"])
+print("[INFO] Training model...")
+opt = SGD(lr=1e-04, momentum=0.9, decay=1e-04/args["epochs"])
+model = BoboNet.build(input_shape=(7 * 7 * 2048, ), classes=args["classes"])
 model.compile(optimizer=opt, loss=loss, metrics=["accuracy"])
 H = model.fit(
     train_gen.generate(),
-    batch_size=args["batch_size"],
-    validation_split=0.25,
-    steps_per_epoch=train_gen.num_image // args["batch_size"]
+    epochs=args["epochs"],
+    validation_data=val_gen.generate(),
+    validation_steps=val_gen.num_images // args["batch_size"],
+    steps_per_epoch=train_gen.num_images // args["batch_size"]
 )
-
 
 # make and display a classification report
-print("[INFO]: evaluating model...")
+print("[INFO]: Evaluating model on test dataset...")
 pred = model.predict(
-    train_gen,
-    batch_size=args["batch_size"],
-    steps=train_gen.num_image // args["batch_size"]
+    test_gen.generate(),
+    steps=test_gen.num_images // args["batch_size"]
 )
+pred = np.argmax(pred, axis=1)
 print(classification_report(
-    y_true=train_gen.db["labels"],
-    y_pred=pred.argmax(axis=0),
-    target_names=train_gen.db["class_labels"]
+    y_pred=pred,
+    y_true=test_gen.db["labels"],
+    target_names=test_gen.db["class_labels"]
 ))
 
-
-# compute the raw accuracy of the model
-accuracy = accuracy_score(train_gen.db["labels"],  pred)
-print(f"[INFO]: score: {accuracy}")
+# compute the raw accuracy with extra precision
+acc = accuracy_score(y_true=test_gen.db["labels"], y_pred=pred)
+print(f"[INFO] score: {acc}")
 
 # saves the model to disk
 print("[INFO]: saving model to disk...")
@@ -114,3 +129,32 @@ model.save(args["model"])
 
 # close the database
 train_gen.close()
+
+# model train history
+H = H.history
+N = np.arange(0, len(H["loss"]))
+
+# creates figures and subplots and plot
+# models loss and accuracy history
+(fig, axis) = plt.subplots(nrows=2, ncols=2, sharex=True)
+(train_axis, val_axis) = axis
+
+train_axis[0].plot(N, H["loss"], label="loss")
+val_axis[0].plot(N, H["val_loss"], label="val_loss")
+
+train_axis[1].plot(N, H["accuracy"], label="accuracy")
+val_axis[1].plot(N, H["val_accuracy"], label="val_accuracy")
+
+train_axis[0].set_ylabel("loss")
+train_axis[1].set_ylabel("accuracy")
+
+val_axis[0].set_ylabel("val_loss")
+val_axis[1].set_ylabel("val_accuracy")
+
+val_axis[0].set_xlabel("Epoch #")
+val_axis[1].set_xlabel("Epoch #")
+
+plt.tight_layout()
+
+# show plot
+plt.show()
