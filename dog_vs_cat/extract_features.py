@@ -98,7 +98,7 @@ for (label, input_path, output_path) in DATASET:
     label = le.transform(label)
     
     # initialize hdf5 database class and add class names (string format) of images
-    db = HDF5DatasetWriter(file_name=output_path, feature_ref_name="data", buffer_size=10000, shape=(len(input_path), 7 * 7 * 2048))
+    db = HDF5DatasetWriter(file_name=output_path, feature_ref_name="data", buffer_size=1000, shape=(len(input_path), 7 * 7 * 2048))
     db.store_class_label(le.classes_)
     
     # loop over image paths in batches

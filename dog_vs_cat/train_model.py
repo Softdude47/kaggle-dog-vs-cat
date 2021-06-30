@@ -89,6 +89,12 @@ val_gen = HDF5DatasetGenerator(
     batch_size=args["batch_size"]
 )
 
+
+def cal_steps(num_images, batch_size):
+    # calculates steps for generator
+    steps = num_images // batch_size
+    return steps + 1 if (steps * batch_size) < num_images else steps
+
 # determine loss function based on unique number of classes
 loss = "binary_crossentropy"
 if args["classes"] > 2:
@@ -96,28 +102,28 @@ if args["classes"] > 2:
 
 # configures optimizer and train model
 print("[INFO] Training model...")
-opt = SGD(lr=1e-04, momentum=0.9, decay=1e-04/args["epochs"])
+opt = SGD(learning_rate=1e-04, momentum=0.9, decay=1e-04/args["epochs"])
 model = BoboNet.build(input_shape=(7 * 7 * 2048, ), classes=args["classes"])
 model.compile(optimizer=opt, loss=loss, metrics=["accuracy"])
 H = model.fit(
     train_gen.generate(),
     epochs=args["epochs"],
     validation_data=val_gen.generate(),
-    validation_steps=val_gen.num_images // args["batch_size"],
-    steps_per_epoch=train_gen.num_images // args["batch_size"]
+    validation_steps=cal_steps(val_gen.num_images, args["batch_size"]),
+    steps_per_epoch=cal_steps(train_gen.num_images, args["batch_size"])
 )
 
 # make and display a classification report
 print("[INFO]: Evaluating model on test dataset...")
 pred = model.predict(
     test_gen.generate(),
-    steps=test_gen.num_images // args["batch_size"]
+    steps=cal_steps(test_gen.num_images, args["batch_size"])
 )
 pred = np.argmax(pred, axis=1)
 print(classification_report(
     y_pred=pred,
     y_true=test_gen.db["labels"],
-    target_names=test_gen.db["class_labels"]
+    target_names=[i.decode("utf-8") for i in test_gen.db["class_labels"]]
 ))
 
 # compute the raw accuracy with extra precision
@@ -135,26 +141,26 @@ train_gen.close()
 H = H.history
 N = np.arange(0, len(H["loss"]))
 
-# creates figures and subplots and plot
-# models loss and accuracy history
-(fig, axis) = plt.subplots(nrows=2, ncols=2, sharex=True)
-(train_axis, val_axis) = axis
+# creates a window containing two graphs/subplots
+(fig, axis) = plt.subplots(nrows=2, sharex=True)
+(acc_axis, loss_axis) = axis
 
-train_axis[0].plot(N, H["loss"], label="loss")
-val_axis[0].plot(N, H["val_loss"], label="val_loss")
+# plot both training and validation loss
+loss_axis.plot(N, H["loss"], label="loss")
+loss_axis.plot(N, H["val_loss"], label="val_loss")
 
-train_axis[1].plot(N, H["accuracy"], label="accuracy")
-val_axis[1].plot(N, H["val_accuracy"], label="val_accuracy")
+# plot both training and validation accuracy
+acc_axis.plot(N, H["accuracy"], label="accuracy")
+acc_axis.plot(N, H["val_accuracy"], label="val_accuracy")
 
-train_axis[0].set_ylabel("loss")
-train_axis[1].set_ylabel("accuracy")
+# label the y-axis of each graph
+loss_axis.set_ylabel("loss")
+acc_axis.set_ylabel("accuracy")
 
-val_axis[0].set_ylabel("val_loss")
-val_axis[1].set_ylabel("val_accuracy")
+loss_axis.set_xlabel("Epoch #")
 
-val_axis[0].set_xlabel("Epoch #")
-val_axis[1].set_xlabel("Epoch #")
-
+loss_axis.legend()
+acc_axis.legend()
 plt.tight_layout()
 
 # show plot
